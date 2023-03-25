@@ -6,17 +6,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "api:make": "node scripts/new-endpoint.js",
+    "migrate:make": "knex migrate:make",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:up": "knex migrate:up",
+    "migrate:down": "knex migrate:down",
+    "migrate:status": "knex migrate:status",
+    "seed:create": "knex seed:make",
+    "seed:run": "knex seed:run"
   },
   "dependencies": {
     "@types/node": "18.15.8",
     "@types/react": "18.0.29",
     "@types/react-dom": "18.0.11",
+    "axios": "^1.3.4",
+    "bcrypt": "^5.1.0",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "knex": "^2.4.2",
+    "mysql": "^2.18.1",
     "next": "13.2.4",
+    "nunjucks": "^3.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "validator": "^13.9.0"
   }
 }

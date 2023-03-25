@@ -1,0 +1,9 @@
+{% if SQL %}import { getKnex } from '@root/knex';
+
+{% endif %}export default async function handler(req: any, res: any) {
+    const query = req.query;
+    const knex = getKnex();
+    const results = await knex('{{table}}')
+        .select('*').first();
+    res.status(200).json(results);
+}
