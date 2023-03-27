@@ -16,7 +16,20 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@root/*": ["./*"]
+      "@root/*": ["./*"],
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@context/*": ["./src/context/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@api/*": ["./src/api/*"],
+      "@types/*": ["./src/types/*"],
+      "@models/*": ["./knex/models/*"],
+      "@migrations/*": ["./knex/migrations/*"],
+      "@seeds/*": ["./knex/seeds/*"],
+      "@validators/*": ["./src/validators/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

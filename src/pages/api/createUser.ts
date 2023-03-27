@@ -3,6 +3,12 @@ import bcrypt from 'bcrypt';
 import validator from 'validator';
 
 export default async function handler(req: any, res: any) {
+    // limit to POST requests
+    if (req.method !== 'POST') {
+        res.status(405).send({ message: 'Only POST requests allowed' })
+        return
+    }
+
     const query = req.query;
     const knex = getKnex();
 

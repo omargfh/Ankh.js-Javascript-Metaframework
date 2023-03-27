@@ -1,38 +1,95 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Next.js Boosted Metaframework with Typescript, Knex, MySQL, Nunjucks, and MVC Architecture
 
-## Getting Started
+This project is a comprehensive Next.js starter kit built on top of the Next.js framework. It is a metaframework that provides a solid foundation for building a web application with Next.js. It is a great starting point for building a web application with Next.js. The project is built with Typescript, Knex, MySQL, Nunjucks, and MVC architecture, with a direct influence from Laravel. This is an ongoing project, and I will be adding more features as I go along as well as fix bugs and update the documentation.
 
-First, run the development server:
+### Key Features
+[x] Knex Interface with MySQL (Documentation: [Knex](http://knexjs.org/))
+[x] Knex Migrations (Documentation: [Knex Migrations](http://knexjs.org/#Migrations))
+[x] Knex Seeds (Documentation: [Knex Seeds](http://knexjs.org/#Seeds))
+[ ] Model Interface built on top of Knex (In Progress)
+[ ] Controller Interface
+[x] Nunjucks Template Render Engine (Documentation: [Nunjucks](https://mozilla.github.io/nunjucks/))
+[x] Validator Interface using Validator (Documentation: [Validator](https://www.npmjs.com/package/validator))
+[x] Encryption Interface using Bcrypt (Documentation: [Bcrypt](https://www.npmjs.com/package/bcrypt))
+[ ] Route Manager
+[ ] Utility Scripts
+[ ] Authentication
+[ ] Authorization
+[ ] Session Management
+[ ] Error Handling
+[ ] Logging
+[ ] Testing
+[ ] Deployment
+[ ] Documentation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+### Working Examples
+#### Knex Interface with MySQL
+```typescript
+import { getKnex } from '@root/knex';
+
+export default async function handler(req: any, res: any) {
+    const knex = getKnex();
+    const users = await knex('users').select('*');
+    res.status(200).json(users);
+    }
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Knex Migrations
+```javascript
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.up = function(knex) {
+    return knex.schema
+        .createTable('users', table => {
+        table.increments('id').primary();
+        table.string('name', 255).notNullable();
+        table.string('email', 255).notNullable();
+        table.string('password', 255).notNullable();
+        table.string('role', 255).notNullable();
+        table.string('remember_token', 255).nullable();
+        table.timestamp('created_at').defaultTo(knex.fn.now());
+        table.timestamp('updated_at').defaultTo(knex.fn.now());
+    })
+}
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+#### Model Interface
+```typescript
+import { Model, ModelCollection } from "@root/knex/models/bin/Model";
+import { UserSalt } from "@models/UserSalt";
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+export class User extends Model {
+    constructor() {
+        super();
+    }
+    table = "users";
+    timestamps = true;
+    hidden = ["password"];
+    fillable = ["name", "email", "password", "role"];
+    with = ["user_salt"];
+    hasRelation = [
+        {
+            name: "salt",
+            model: UserSalt,
+            foreignKey: "user_id",
+            localKey: "id",
+            relationship: "hasOne"
+        }
+    ]
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+    static async create(name: string, email: string, password: string, role: string) {
+        // Create user
+        let user = await User.New();
+        user.name = name;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        user.salt.salt = salt;
+        await user.save();
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+        return user;
+    }
+}
+```

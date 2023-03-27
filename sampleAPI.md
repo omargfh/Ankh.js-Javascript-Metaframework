@@ -1,0 +1,1 @@
+http://localhost:3001/api/createUser?email=omaribrahim2@uchicago.edu&password=12356789&role=admin&name=omar
