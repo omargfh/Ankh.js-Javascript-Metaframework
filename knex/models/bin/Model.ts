@@ -130,7 +130,7 @@ export class Model {
 
         // Dynamically load columns as properties of the model
         for (let attribute of this.columns) {
-            this.instance[attribute] = undefined;
+            this.instance[attribute] = null;
             if (this.hidden.includes(attribute)) {
                 Object.defineProperty(this, attribute, {
                     get: () => undefined,
@@ -147,6 +147,7 @@ export class Model {
         }
 
         // Dynamically load relationships as properties of the model
+        // TODO: dynamically load relationships on non-abstract models
         for (let relation of this.hasRelation) {
             if (relation.relationship === "hasOne") {
                 let foreignModel = await this.hasOne(relation.model, relation.foreignKey, relation.localKey);
@@ -215,6 +216,18 @@ export class Model {
         return model;
     }
 
+    async __popualteRelationships() {
+        for (let relation of this.relationships) {
+            if (relation.relationship === "hasOne") {
+                let results = await this.knex(relation.model.table).where(relation.foreignKey, this.instance[relation.localKey]).first();
+                if (results) {
+                    relation.model.instance = results;
+                    relation.model.abstractConstructor = false;
+                }
+            }
+        }
+    }
+
     // Relationship Constructor
     async hasOne(model: typeof Model, foreignKey: string, localKey: string = this.__getPrimaryKey()) {
         let foreignModel: Awaited<ReturnType<typeof model.New>>;
@@ -277,6 +290,8 @@ export class Model {
         Object.keys(this.instance).forEach(key => {
             this.instance[key] = knexResults[key];
         });
+        // Populate relationships
+        await this.__popualteRelationships();
         return this;
     }
 
@@ -329,6 +344,7 @@ export class Model {
     }
 
     getInstance() {
+        // Load model values
         let instance: Record<string, any> = {};
         Object.keys(this.instance).forEach(key => {
             if (!this.hidden.includes(key)) {
@@ -336,11 +352,16 @@ export class Model {
             }
         });
         instance[this.__getPrimaryKey()] = this.instance[this.__getPrimaryKey()];
+
+        // Load relationship values
+        for (let relationship of this.with) {
+            // TODO: Implement this
+        }
         return instance;
     }
 
     serialize() {
-        return JSON.stringify(this.getInstance());
+        return this.getInstance();
     }
 
     // Value setters
@@ -369,8 +390,8 @@ export class Model {
     }
 
     // Setters
-    push() {
-        if (this.abstractConstructor) {
+    async push() {
+        if (this.abstractConstructor === true) {
             throw new Error("Can only push reference-based models");
         }
         if (this.timestamps) {
@@ -379,9 +400,9 @@ export class Model {
                 this.instance.created_at = new Date();
             }
         }
-        this.knex(this.table).where("id", this.instance.id).update(this.instance);
+        await this.knex(this.table).where("id", this.instance.id).update(this.instance);
         for (let relationship of this.relationships) {
-            relationship.model.push();
+            await relationship.model.push();
         }
     }
 
@@ -395,12 +416,10 @@ export class Model {
                 this.instance.created_at = new Date();
             }
         }
-        console.log("Saving model: ", this.instance)
         let id = await this.knex(this.table).insert(this.instance).returning(this.__getPrimaryKey());
         this.instance.id = id[0];
         for (let relationship of this.relationships) {
             if (typeof relationship.relationship === "string" && relationship.relationship === "hasOne") {
-                console.log("Saving relationship: ", relationship)
                 relationship.model.instance[relationship.foreignKey] = this.instance[relationship.localKey];
                 await relationship.model.save();
             }
