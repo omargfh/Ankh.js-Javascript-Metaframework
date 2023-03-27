@@ -4,5 +4,6 @@ export class UserSalt extends Model {
         super();
     }
     table = "user_salt";
-    hidden = ["salt"];
+    // hidden = ["salt"];
+    foreignKeys = ["user_id"];
 }

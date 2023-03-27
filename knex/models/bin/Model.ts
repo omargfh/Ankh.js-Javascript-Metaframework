@@ -44,6 +44,8 @@ export class Model {
     instanceTypes: Record<string, string> = {};
     // The name of the primary key
     primaryKey: string = "id";
+    // The name of the foreign keys
+    foreignKeys: string[] = [];
     // The relationships that have been defined
     relationships: Relationship[] = [];
     hasRelation: RelationshipExternalIdentifier[] = [];
@@ -352,16 +354,32 @@ export class Model {
             }
         });
         instance[this.__getPrimaryKey()] = this.instance[this.__getPrimaryKey()];
-
-        // Load relationship values
-        for (let relationship of this.with) {
-            // TODO: Implement this
-        }
         return instance;
     }
 
-    serialize() {
-        return this.getInstance();
+    serialize(depth: number = 1) {
+        let instance = this.getInstance();
+        // Prevents infinite recursion
+        let relationships = new Map();
+        if (depth >= 0) {
+            for (let relation of this.relationships) {
+                if (!this.with.includes(relation.model.table)) {
+                    continue;
+                }
+                if (relation.relationship === "hasOne") {
+                    let serialized = relation.model.serialize(depth - 1);
+                    Object.keys(serialized).forEach(key => {
+                        if (relationships.has(key) || key.slice(-2) == "id") {
+                            relationships.set(`${relation.model.table}.${key}`, serialized[key]);
+                        }
+                        else {
+                            relationships.set(key, serialized[key]);
+                        }
+                    });
+                }
+            }
+        }
+        return { ...instance, ...Object.fromEntries(relationships) };
     }
 
     // Value setters
@@ -420,10 +438,12 @@ export class Model {
         this.instance.id = id[0];
         for (let relationship of this.relationships) {
             if (typeof relationship.relationship === "string" && relationship.relationship === "hasOne") {
+                // TODO: Check why TS doesn't like this
                 relationship.model.instance[relationship.foreignKey] = this.instance[relationship.localKey];
                 await relationship.model.save();
             }
             else {
+                // TODO: Check why TS doesn't like this
                 for (let model of relationship.model) {
                     model.instance[relationship.foreignKey] = this.instance[relationship.localKey];
                     await model.save();
