@@ -95,3 +95,46 @@ export class User extends Model {
     }
 }
 ```
+
+#### Middleware Injection
+```typescript
+import { Middleware } from "@root/middleware/bin/Middleware";
+export default async function handler(req: any, res: any) {
+    Middleware.expose(req, res, 'auth', []).then((response: AnkhApiResponse) => {
+        res.status(200).json(response.req.query.id);
+    });
+}
+```
+
+#### Middleware Initialization
+```typescript
+import { Middleware } from '@ankh/bin/Middlewares/Middleware';
+import { AnkhApiRequest, AnkhApiResponse, AnkhClosure, Abort } from '@ankh/bin/Http/types';
+
+export default class AdminAuthMiddleWare {
+    static handler(req: AnkhApiRequest, next: AnkhClosure): AnkhApiResponse {
+        let response = next(req);
+        response.req.query.id = '123';
+        return response;
+    }
+}
+```
+
+#### Middleware Declaration
+```typescript
+import AdminAuthMiddleware from '@ankh/middlewares/AdminAuthMiddleware';
+const Kernel = {
+    'middlewares': {
+        'AdminAuthMiddleware': AdminAuthMiddleware.handler
+    },
+    'middlewareGroups': {
+        'web': [],
+        'api': []
+    },
+    'routeMiddleware': {
+        'auth': 'AdminAuthMiddleware',
+    }
+}
+
+export default Kernel;
+```
