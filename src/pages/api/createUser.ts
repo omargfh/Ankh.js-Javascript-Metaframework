@@ -1,4 +1,4 @@
-import { getKnex } from '@root/knex';
+import { getKnex } from '@root/ankh/bin/Migrations';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 

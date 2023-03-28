@@ -1,7 +1,7 @@
-import { getKnex } from '@root/knex';
+import { getKnex } from '@root/ankh/bin/Migrations';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
-import { User } from '@models/User';
+import { User } from '@root/ankh/models/User';
 
 export default async function handler(req: any, res: any) {
 

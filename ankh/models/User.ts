@@ -1,8 +1,8 @@
-import { Model, ModelCollection } from "@root/knex/models/bin/Model";
+import { Model, ModelCollection } from "@ankh/bin/Models/Model";
 import validator from "validator";
-import validatorFn from "@validators/userValidator";
+import validatorFn from "@root/ankh/validators/userValidator";
 import bcrypt from "bcrypt";
-import { UserSalt } from "@models/UserSalt";
+import { UserSalt } from "@root/ankh/models/UserSalt";
 
 interface UserInterface {
     name: string;

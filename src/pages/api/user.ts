@@ -1,4 +1,4 @@
-import { getKnex } from '@root/knex';
+import { getKnex } from '@root/ankh/bin/Migrations';
 
 export default async function handler(req: any, res: any) {
     const { id } = req.query;

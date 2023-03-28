@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "api:make": "node scripts/new-endpoint.js",
+    "api:make": "node ankh/bin/Scripts/new-endpoint.js",
     "migrate:make": "knex migrate:make",
     "migrate:latest": "knex migrate:latest",
     "migrate:up": "knex migrate:up",

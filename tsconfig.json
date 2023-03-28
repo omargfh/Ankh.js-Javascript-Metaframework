@@ -26,10 +26,11 @@
       "@assets/*": ["./src/assets/*"],
       "@api/*": ["./src/api/*"],
       "@types/*": ["./src/types/*"],
-      "@models/*": ["./knex/models/*"],
-      "@migrations/*": ["./knex/migrations/*"],
-      "@seeds/*": ["./knex/seeds/*"],
-      "@validators/*": ["./src/validators/*"]
+      "@models/*": ["./ankh/models/*"],
+      "@migrations/*": ["./ankh/migrations/*"],
+      "@seeds/*": ["./ankh/seeds/*"],
+      "@validators/*": ["ankh/validators/*"],
+      "@ankh/*": ["./ankh/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

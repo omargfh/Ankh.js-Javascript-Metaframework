@@ -1,4 +1,4 @@
-import { getKnex } from '@root/knex';
+import { getKnex } from '@root/ankh/bin/Migrations';
 import schemaInspector from 'knex-schema-inspector';
 
 type Knex = ReturnType<typeof getKnex>;
@@ -53,6 +53,8 @@ export class Model {
     abstractConstructor: boolean = false;
     // Determines whether the model is booted
     isBooted: boolean = false;
+    // Serialization depth
+    depth: number = 1;
 
     // Constructors
     constructor() {
@@ -70,6 +72,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = true;
+        // TODO: Implement relationship eager loading
         return abstractInstance;
     }
 
@@ -77,6 +80,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = false;
+        // TODO: Implement relationship eager loading
         return abstractInstance.find(id);
     }
 
@@ -84,6 +88,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = false;
+        // TODO: Implement relationship eager loading
         return abstractInstance.where(where);
     }
 
@@ -91,6 +96,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = false;
+        // TODO: Implement relationship eager loading
         return abstractInstance.all();
     }
 
@@ -98,6 +104,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = false;
+        // TODO: Implement relationship eager loading
         return abstractInstance.query(query);
     }
 
@@ -105,6 +112,7 @@ export class Model {
         let abstractInstance = new this();
         await abstractInstance.init();
         abstractInstance.abstractConstructor = false;
+        // TODO: Implement relationship eager loading
         return abstractInstance.knexQuery(query);
     }
 
@@ -132,6 +140,10 @@ export class Model {
 
         // Dynamically load columns as properties of the model
         for (let attribute of this.columns) {
+            // TODO: prevent redefinition of class properties
+            // Expected behavior: if a class property is defined, it should be used instead of the column
+            // and the column should be ignored (i.e. not be loaded as a property)
+            // The attribute can be accessed using the get(), set() methods
             this.instance[attribute] = null;
             if (this.hidden.includes(attribute)) {
                 Object.defineProperty(this, attribute, {
@@ -160,6 +172,8 @@ export class Model {
                 });
             }
         }
+
+        // TODO: Implement the rest of the relationships
     }
 
     async booting() {
@@ -228,6 +242,8 @@ export class Model {
                 }
             }
         }
+        // TODO: Implement the rest of the relationships
+
     }
 
     // Relationship Constructor
@@ -369,7 +385,7 @@ export class Model {
                 if (relation.relationship === "hasOne") {
                     let serialized = relation.model.serialize(depth - 1);
                     Object.keys(serialized).forEach(key => {
-                        if (relationships.has(key) || key.slice(-2) == "id") {
+                        if (relationships.has(key) || key.slice(-2) == "id" || relation.model.foreignKeys.includes(key)) {
                             relationships.set(`${relation.model.table}.${key}`, serialized[key]);
                         }
                         else {
