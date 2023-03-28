@@ -1,6 +1,4 @@
-<div width=400>
-![Ankh.js](public/logo.png)
-</div>
+<img width=400 src="https://user-images.githubusercontent.com/51462341/228115249-ac9b01bc-0976-4f46-81f8-0c3eab82f642.png" alt="Next.js Metaframework">
 <h1 align="center">A comprehensive metaframework for web development built on Next.js</h1>
 
 This project is a comprehensive Next.js starter kit built on top of the Next.js framework. It is a metaframework that provides a solid foundation for building a web application with Next.js. It is a great starting point for building a web application with Next.js. The project is built with Typescript, Knex, MySQL, Nunjucks, and MVC architecture, with a direct influence from Laravel. This is an ongoing project, and I will be adding more features as I go along as well as fix bugs and update the documentation.
