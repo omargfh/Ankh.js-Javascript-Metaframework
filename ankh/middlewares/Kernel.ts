@@ -5,10 +5,10 @@ const Kernel = {
     },
     'middlewareGroups': {
         'web': [],
-        'api': []
+        'api': [],
     },
     'routeMiddleware': {
-        'auth': 'AdminAuthMiddleware',
+        'api/mware': 'AdminAuthMiddleware',
     }
 }
 

@@ -17,6 +17,7 @@
     "seed:run": "knex seed:run"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
     "@types/node": "18.15.8",
     "@types/react": "18.0.29",
     "@types/react-dom": "18.0.11",
@@ -28,9 +29,13 @@
     "knex-schema-inspector": "^3.0.1",
     "mysql": "^2.18.1",
     "next": "13.2.4",
+    "next-redux-wrapper": "^8.1.0",
     "nunjucks": "^3.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
+    "sass": "^1.60.0",
     "typescript": "5.0.2",
     "validator": "^13.9.0"
   }

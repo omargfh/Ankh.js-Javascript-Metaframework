@@ -4,3 +4,8 @@ export type AnkhApiRequest = NextApiRequest;
 export type AnkhApiResponse = NextApiResponse;
 export type AnkhClosure = (req: AnkhApiRequest) => AnkhApiResponse;
 export type AnkhHandler = (req: AnkhApiRequest, res: AnkhApiResponse) => void | AnkhApiResponse;
+
+
+let Continue = true;
+let Abort = false;
+export { Continue, Abort };

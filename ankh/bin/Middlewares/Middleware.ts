@@ -1,4 +1,4 @@
-import { AnkhApiRequest, AnkhClosure, AnkhApiResponse, Abort } from "@ankh/bin/Http/types";
+import { AnkhApiRequest, AnkhClosure, AnkhApiResponse, Abort } from "@ankh/bin/Http/types.d";
 import Kernel from "@ankh/middlewares/Kernel";
 
 export class Middleware {
@@ -7,8 +7,18 @@ export class Middleware {
         return response;
     }
 
-    // @middleware decorator
-    static async expose(req: AnkhApiRequest, res: AnkhApiResponse, routeName: string = '', groups: string[] = []): Promise<AnkhApiResponse> {
+    static getRouteName(filename: string) {
+        // TODO: Make this generic to api and web routes
+        let prefix = 'pages/api/';
+        let indexOfPrefix = filename.indexOf(prefix);
+        let routeName = filename.slice(indexOfPrefix + prefix.length, filename.length - 3);
+        return 'api/' + routeName;
+    }
+
+    static async expose(req: AnkhApiRequest, res: AnkhApiResponse, groups: string[] = []): Promise<AnkhApiResponse | typeof Abort> {
+        // Set route name
+        let routeName = Middleware.getRouteName(__filename);
+        // Collect middlewares for the route
         let middlewareGroups = Object.keys(Kernel.middlewareGroups)
         .filter((group) => groups.includes(group))
             // @ts-ignore
@@ -18,6 +28,8 @@ export class Middleware {
         let routeMiddleware = Kernel.routeMiddleware.hasOwnProperty(routeName) ? [Kernel.routeMiddleware[routeName]] : [];
 
         // Collect all relevant middlewares
+        // Priority is given to route middleware
+        // which means it is executed last
         let middlewareQueue = [...middlewareGroups, ...routeMiddleware];
         // Execute the middleware queue
         for (let ref of middlewareQueue) {
@@ -28,11 +40,17 @@ export class Middleware {
             // and the response
             let next = (req: AnkhApiRequest) => {
                 // Return the response of the handler
+                // TODO: Properly implement this
                 return res;
             }
             // Execute the middleware and update the response
             // @ts-ignore
-            res = await Kernel.middlewares[ref](req, next);
+            try {
+                res = await Kernel.middlewares[ref](req, next);
+            }
+            catch {
+                return Abort;
+            }
             // Update request
             for (let key in req) {
                 if (req.hasOwnProperty(key)) {
