@@ -1,4 +1,6 @@
-## Next.js Boosted Metaframework with Typescript, Knex, MySQL, Nunjucks, and MVC Architecture
+<!-- center -->
+![Ankh.js](public/logo.png)
+<h1 align="center">A comprehensive metaframework for web development built on Next.js</h1>
 
 This project is a comprehensive Next.js starter kit built on top of the Next.js framework. It is a metaframework that provides a solid foundation for building a web application with Next.js. It is a great starting point for building a web application with Next.js. The project is built with Typescript, Knex, MySQL, Nunjucks, and MVC architecture, with a direct influence from Laravel. This is an ongoing project, and I will be adding more features as I go along as well as fix bugs and update the documentation.
 
@@ -8,6 +10,7 @@ This project is a comprehensive Next.js starter kit built on top of the Next.js 
 - [x] Knex Seeds (Documentation: [Knex Seeds](http://knexjs.org/#Seeds))
 - [ ] Model Interface built on top of Knex (In Progress)
 - [ ] Controller Interface
+- [ ] Middlewares (In Progress)
 - [x] Nunjucks Template Render Engine (Documentation: [Nunjucks](https://mozilla.github.io/nunjucks/))
 - [x] Validator Interface using Validator (Documentation: [Validator](https://www.npmjs.com/package/validator))
 - [x] Encryption Interface using Bcrypt (Documentation: [Bcrypt](https://www.npmjs.com/package/bcrypt))
